@@ -1,0 +1,59 @@
+package com.example.backend.service;
+
+import java.time.LocalDate;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.example.backend.dao.CheckoutRepository;
+import com.example.backend.dao.JewelryRepository;
+import com.example.backend.entity.Checkout;
+import com.example.backend.entity.Jewelry;
+
+import jakarta.transaction.Transactional;
+
+@Service
+@Transactional
+public class JewelryService {
+
+    private final JewelryRepository jewelryRepository;
+    private final CheckoutRepository checkoutRepository;
+
+    public JewelryService(JewelryRepository jewelryRepository, CheckoutRepository checkoutRepository) {
+        this.jewelryRepository = jewelryRepository;
+        this.checkoutRepository = checkoutRepository;
+    }
+
+    public Jewelry checkoutJewelry(String userEmail, Long jewelryId) {
+
+        // Check if jewelry exists
+        Jewelry jewelry = jewelryRepository.findById(jewelryId)
+                .orElseThrow(() -> new IllegalStateException("Jewelry not found"));
+
+        // Check if already checked out
+        Checkout validateCheckout = checkoutRepository.findByUserEmailAndJewelryId(userEmail, jewelryId);
+        if (validateCheckout != null || jewelry.getStock_quantity() <= 0) {
+            throw new IllegalStateException("Jewelry already checked out by user or out of stock");
+        }
+
+        // Reduce quantity and save
+        jewelry.setStock_quantity(jewelry.getStock_quantity() - 1);
+        jewelryRepository.save(jewelry);
+
+        // Create and save checkout
+        Checkout checkout = new Checkout(
+                userEmail,
+                LocalDate.now().toString(),
+                LocalDate.now().plusDays(7).toString(),
+                jewelry.getBrand()
+        );
+
+        checkoutRepository.save(checkout);
+
+        return jewelry;
+    }
+}
+
+	
+
+	

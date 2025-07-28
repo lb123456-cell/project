@@ -1,0 +1,10 @@
+package com.example.backend.dao;
+
+package JewelryRepository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.jewelrystore.model.Jewelry;
+
+public interface JewelryRepository extends JpaRepository<Jewelry, Long> {
+}
+

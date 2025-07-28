@@ -1,0 +1,118 @@
+{
+  "allow": [
+    {
+      "origins": [
+        "http://.get.microsoft.com",
+        "http://.apps.microsoft.com"
+      ],
+      "protocol": "ms-windows-store"
+    },
+    {
+      "origins": [
+        "http://.onedrive.com",
+        "http://.onedrive.live.com",
+        "http://sharepoint.com"
+      ],
+      "protocol": "ms-word"
+    },
+    {
+      "origins": [
+        "http://[a-z1-9-]*word-edit.officeapps.live.com",
+        "http://[a-z1-9-]*word-view.officeapps.live.com",
+        "http://[a-z1-9-]*onenote.officeapps.live.com",
+        "http://[a-z1-9-]*eap.officeapps.live.com",
+        "http://[a-z1-9-]*shared.officeapps.live.com",
+        "http://[a-z1-9-]*afhs.officeapps.live.com",
+        "http://[a-z1-9-]*vhs.officeapps.live.com",
+        "http://[a-z1-9-]*optin.online.office.com"
+      ],
+      "use_regex": true,
+      "protocol": "ms-word"
+    },
+    {
+      "origins": [
+        "http://.onedrive.com",
+        "http://.onedrive.live.com",
+        "http://sharepoint.com"
+      ],
+      "protocol": "ms-excel"
+    },
+    {
+      "origins": [
+        "http://[a-z1-9-]*excel.officeapps.live.com",
+        "http://[a-z1-9-]*onenote.officeapps.live.com",
+        "http://[a-z1-9-]*eap.officeapps.live.com",
+        "http://[a-z1-9-]*shared.officeapps.live.com",
+        "http://[a-z1-9-]*afhs.officeapps.live.com",
+        "http://[a-z1-9-]*vhs.officeapps.live.com",
+        "http://[a-z1-9-]*optin.online.office.com"
+      ],
+      "use_regex": true,
+      "protocol": "ms-excel"
+    },
+    {
+      "origins": [
+        "http://.onedrive.com",
+        "http://.onedrive.live.com",
+        "http://sharepoint.com"
+      ],
+      "protocol": "ms-powerpoint"
+    },
+    {
+      "origins": [
+        "http://[a-z1-9-]*powerpoint.officeapps.live.com",
+        "http://[a-z1-9-]*onenote.officeapps.live.com",
+        "http://[a-z1-9-]*eap.officeapps.live.com",
+        "http://[a-z1-9-]*shared.officeapps.live.com",
+        "http://[a-z1-9-]*afhs.officeapps.live.com",
+        "http://[a-z1-9-]*vhs.officeapps.live.com",
+        "http://[a-z1-9-]*optin.online.office.com"
+      ],
+      "use_regex": true,
+      "protocol": "ms-powerpoint"
+    },
+    {
+      "origins": [
+        "http://.onedrive.com",
+        "http://.onedrive.live.com",
+        "http://sharepoint.com"
+      ],
+      "protocol": "ms-visio"
+    },
+    {
+      "origins": [
+        "http://[a-z1-9-]*visio.officeapps.live.com",
+        "http://[a-z1-9-]*onenote.officeapps.live.com",
+        "http://[a-z1-9-]*eap.officeapps.live.com",
+        "http://[a-z1-9-]*shared.officeapps.live.com",
+        "http://[a-z1-9-]*afhs.officeapps.live.com",
+        "http://[a-z1-9-]*vhs.officeapps.live.com",
+        "http://[a-z1-9-]*optin.online.office.com"
+      ],
+      "use_regex": true,
+      "protocol": "ms-visio"
+    },
+    {
+      "origins": [
+        "http://www.microsoft.com"
+      ],
+      "protocol": "ms-copilot"
+    }
+  ],
+  "warn": [
+    {
+      "origins": [
+        "*"
+      ],
+      "protocol": "ms-test-warn"
+    }
+  ],
+  "block": [
+    {
+      "origins": [
+        "*"
+      ],
+      "protocol": "ms-test-block"
+    }
+  ]
+}

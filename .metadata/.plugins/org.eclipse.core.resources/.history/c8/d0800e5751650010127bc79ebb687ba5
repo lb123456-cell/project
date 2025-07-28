@@ -1,0 +1,44 @@
+package com.example.backend.Controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.backend.entity.Jewelry;
+import com.example.backend.service.JewelryService;
+
+@CrossOrigin("http://localhost:3000")
+@RestController
+@RequestMapping("/api/jewelries")
+
+public class JewelryController {
+	
+	private JewelryService jewelryService;
+	private Object userEmail;
+	
+	@Autowired
+	public JewelryController(JewelryService jewelryService) {
+		this.jewelryService = jewelryService;
+	}
+	
+	@GetMapping("/secure/currentLoans/count")
+	public int currentLoandCount() {
+		String userEmail = "test1user@email.com";
+		return jewelryService.currentLoanCount(userEmail);
+	}
+	
+	@GetMapping("/secure/ischeckedout/byuser")
+	public Boolean checkoutJewelryByUser(@RequestParam Long jewelryId) {
+		return jewelryService.checkoutJewelryByUse(userEmail, jewelryId);
+	}
+
+	@PutMapping("/secure/checkout")
+	public Jewelry checkoutJewelry (@RequestParam Long jewelryId) throws Exception{
+		String userEmail = "test1user@email.com";
+		return jewelryService.checkoutJewelry(userEmail,  jewelryId);
+	}
+}

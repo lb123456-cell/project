@@ -1,0 +1,48 @@
+package com.example.backend.Controller;
+
+import com.example.backend.entity.Jewelry;
+import com.example.backend.service.JewelryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
+@RestController
+@RequestMapping("/api/jewelries")
+@CrossOrigin("http://localhost:3000")
+public class JewelryController {
+
+    private final JewelryService jewelryService;
+
+    @Autowired
+    public JewelryController(JewelryService jewelryService) {
+        this.jewelryService = jewelryService;
+    }
+
+    @PutMapping("/secure/checkout")
+    public Jewelry checkoutJewelry(@AuthenticationPrincipal Jwt jwt,
+                                   @RequestParam Long jewelryId) throws Exception {
+        String userEmail = jwt.getClaimAsString("sub"); // 👈 or "email" depending on your token
+        return jewelryService.checkoutJewelry(userEmail, jewelryId);
+    }
+
+    @GetMapping("/secure/ischeckedout/byuser")
+    public Boolean isCheckedOutByUser(@AuthenticationPrincipal Jwt jwt,
+                                      @RequestParam Long jewelryId) {
+        String userEmail = jwt.getClaimAsString("sub");
+        return jewelryService.isCheckedOutByUser(userEmail, jewelryId);
+    }
+
+    @GetMapping("/secure/currentloans")
+    public int currentLoansCount(@AuthenticationPrincipal Jwt jwt) {
+        String userEmail = jwt.getClaimAsString("sub");
+        return jewelryService.currentLoanCount(userEmail);
+    }
+
+    @GetMapping("/checkout/count")
+    public int getCheckoutCount(@RequestParam Long jewelryId) {
+        return jewelryService.getCheckoutCountForJewelry(jewelryId);
+    }
+}
+
+

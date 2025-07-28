@@ -1,0 +1,23 @@
+package com.example.backend.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Entity
+@Table(name = "checkout")
+@Data
+public class Checkout {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String userEmail;
+    private String checkoutDate;
+    private String returnDate;
+
+    @ManyToOne
+    @JoinColumn(name = "jewelry_id", nullable = false)
+    private Jewelry jewelry;
+}
+

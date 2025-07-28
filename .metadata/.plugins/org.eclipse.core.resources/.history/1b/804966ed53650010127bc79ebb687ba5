@@ -1,0 +1,14 @@
+package com.example.backend.dao;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.backend.entity.Checkout;
+
+public interface CheckoutRepository extends JpaRepository<Checkout, Long> {
+	Optional<Checkout> findByUserEmailAndJewelryId(Object userEmail, Long jewelryId);
+    List<Checkout> findJewelriesByUserEmail(String userEmail);
+	Optional<Checkout> findByUserEmailAndJewelryId1(String userEmail, Long jewelryId); 
+}

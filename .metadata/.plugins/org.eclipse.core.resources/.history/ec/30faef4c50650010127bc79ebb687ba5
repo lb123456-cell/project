@@ -1,0 +1,7 @@
+package com.example.backend.dao;
+
+public interface CheckoutRepository {
+
+	Object findJewelriesByUserEmail(String userEmail);
+
+}

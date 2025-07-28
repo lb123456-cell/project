@@ -1,0 +1,9 @@
+package snippet;
+
+public class Snippet {
+	public static void main(String[] args) {
+		spring.data.rest.base-path=/api
+		
+	}
+}
+

@@ -1,0 +1,192 @@
+package com.example.backend.service;
+
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.stereotype.Service;
+
+import com.example.backend.dao.CheckoutRepository;
+import com.example.backend.dao.HistoryRepository;
+import com.example.backend.dao.JewelryRepository;
+import com.example.backend.entity.Checkout;
+import com.example.backend.entity.History;
+import com.example.backend.entity.Jewelry;
+import com.example.backend.responsemodels.ShelfCurrentLoansResponse;
+
+import jakarta.transaction.Transactional;
+
+@Service
+@Transactional
+public class JewelryService {
+
+    private final JewelryRepository jewelryRepository;
+    private final CheckoutRepository checkoutRepository;
+    private final HistoryRepository historyRepository;
+
+    public JewelryService(JewelryRepository jewelryRepository, CheckoutRepository checkoutRepository, HistoryRepository historyRepository) {
+        this.jewelryRepository = jewelryRepository;
+        this.checkoutRepository = checkoutRepository;
+        this.historyRepository = historyRepository;
+    }
+
+    public Jewelry checkoutJewelry(String userEmail, Long jewelryId) {
+        System.out.println("Starting checkout for user: " + userEmail + ", jewelryId: " + jewelryId);
+
+        Jewelry jewelry = jewelryRepository.findById(jewelryId)
+                .orElseThrow(() -> new IllegalStateException("Jewelry not found"));
+
+        Optional<Checkout> validateCheckout = checkoutRepository.findByUserEmailAndJewelryId(userEmail, jewelryId);
+        if (validateCheckout.isPresent()) {
+            throw new IllegalStateException("Jewelry already checked out by user.");
+        }
+
+        int currentLoans = checkoutRepository.findByUserEmail(userEmail).size();
+        if (currentLoans >= 5) {
+            throw new IllegalStateException("User has reached max allowed checkout limit (5).");
+        }
+
+        int checkedOutCount = checkoutRepository.countByJewelryId(jewelryId);
+        int available = jewelry.getStockQuantity() - checkedOutCount;
+        if (available <= 0) {
+            throw new IllegalStateException("Jewelry is out of stock.");
+        }
+
+        Checkout checkout = new Checkout(
+                userEmail,
+                LocalDate.now().toString(),
+                LocalDate.now().plusDays(7).toString(),
+                jewelry
+        );
+
+        checkoutRepository.save(checkout);
+        System.out.println("Checkout complete.");
+        return jewelry;
+    }
+
+
+    public Boolean isJewelryCheckedOutByUser(String userEmail, Long jewelryId) {
+        Optional<Checkout> validateCheckout = checkoutRepository.findByUserEmailAndJewelryId(userEmail, jewelryId);
+        return validateCheckout.isPresent();
+    }
+
+    public int currentLoanCount(String userEmail) {
+        return checkoutRepository.findByUserEmail(userEmail).size();
+    }
+
+    public List<ShelfCurrentLoansResponse> currentLoans(String userEmail) throws Exception {
+        System.out.println("Fetching current loans for user: " + userEmail);
+        List<ShelfCurrentLoansResponse> shelfCurrentLoansResponses = new ArrayList<>();
+
+        List<Checkout> checkoutList = checkoutRepository.findByUserEmail(userEmail);
+        System.out.println("Found " + checkoutList.size() + " checkouts");
+
+        List<Long> jewelryIdList = new ArrayList<>();
+        for (Checkout i : checkoutList) {
+            jewelryIdList.add(i.getJewelry().getId());
+        }
+
+        List<Jewelry> jewelries = jewelryRepository.findJewelriesByJewelryIds(jewelryIdList);
+        System.out.println("Found " + jewelries.size() + " jewelries");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        for (Jewelry jewelry : jewelries) {
+            Optional<Checkout> checkout = checkoutList.stream()
+                    .filter(x -> x.getJewelry().getId().equals(jewelry.getId()))
+                    .findFirst();
+
+            if (checkout.isPresent()) {
+                String returnDateStr = checkout.get().getReturnDate();
+                System.out.println("Return date string: " + returnDateStr);
+
+                if (returnDateStr != null && !returnDateStr.isEmpty()) {
+                    try {
+                        Date d1 = new Date(sdf.parse(returnDateStr).getTime());
+                        Date d2 = new Date(sdf.parse(LocalDate.now().toString()).getTime());
+
+                        TimeUnit time = TimeUnit.DAYS;
+                        long difference_In_Time = time.convert(d1.getTime() - d2.getTime(), TimeUnit.MILLISECONDS);
+
+                        shelfCurrentLoansResponses.add(
+                                new ShelfCurrentLoansResponse(jewelry, (int) difference_In_Time));
+                    } catch (Exception e) {
+                        System.err.println("‼️ Error parsing date for jewelry: " + jewelry.getId());
+                        e.printStackTrace();
+                    }
+                } else {
+                    System.err.println("‼️ Return date is null or empty for jewelry: " + jewelry.getId());
+                }
+            } else {
+                System.err.println("‼️ Checkout not found for jewelry: " + jewelry.getId());
+            }
+        }
+
+        return shelfCurrentLoansResponses;
+    }
+
+    public void returnJewelry(String userEmail, Long jewelryId) throws Exception {
+        Optional<Jewelry> jewelry = jewelryRepository.findById(jewelryId);
+        Optional<Checkout> validateCheckout = checkoutRepository.findByUserEmailAndJewelryId(userEmail, jewelryId);
+
+        if (!jewelry.isPresent() || !validateCheckout.isPresent()) {
+            throw new Exception("Jewelry does not exist or is not checked out by user");
+        }
+
+        Jewelry j = jewelry.get();
+
+        checkoutRepository.deleteById(validateCheckout.get().getId());
+
+        History history = new History(
+                userEmail,
+                validateCheckout.get().getCheckoutDate(),
+                LocalDate.now().toString(),
+                j.getName(),
+                j.getBrand(),
+                j.getDescription(),
+                j.getImg() 
+        );
+        historyRepository.save(history);
+    }
+
+    public void renewLoan(String userEmail, Long jewelryId) throws Exception {
+        Optional<Checkout> optionalCheckout = checkoutRepository.findByUserEmailAndJewelryId(userEmail, jewelryId);
+
+        if (!optionalCheckout.isPresent()) {
+            throw new Exception("Jewelry does not exist or is not checked out by user");
+        }
+
+        Checkout validateCheckout = optionalCheckout.get();
+
+        SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        java.util.Date parsedD1 = sdFormat.parse(validateCheckout.getReturnDate());
+        java.util.Date parsedD2 = sdFormat.parse(LocalDate.now().toString());
+
+        Date d1 = new Date(parsedD1.getTime());
+        Date d2 = new Date(parsedD2.getTime());
+
+        if (d1.compareTo(d2) >= 0) {
+            validateCheckout.setReturnDate(LocalDate.now().plusDays(7).toString());
+            checkoutRepository.save(validateCheckout);
+        }
+    }
+
+    public int getCheckoutCountForJewelry(Long jewelryId) {
+        return checkoutRepository.countByJewelryId(jewelryId);
+    }
+
+    public Optional<Jewelry> findById(Long id) {
+        return jewelryRepository.findById(id);
+    }
+}
+
+
+
+	
+
+	

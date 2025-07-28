@@ -1,0 +1,4 @@
+com\example\backend\BackendApplication.class
+com\example\backend\config\MyDataRestConfig.class
+com\example\backend\entity\Jewelry.class
+com\example\backend\dao\JewelryRepository.class

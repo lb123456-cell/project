@@ -1,0 +1,26 @@
+package com.example.backend.controller;
+
+import com.example.backend.entity.Jewelry;
+import com.example.backend.dao.JewelryRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/jewelries")
+@CrossOrigin("http://localhost:3000") // allows frontend requests
+public class cont {
+
+    private final JewelryRepository jewelryRepository;
+
+    public cont(JewelryRepository jewelryRepository) {
+        this.jewelryRepository = jewelryRepository;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Jewelry> getJewelryById(@PathVariable Long id) {
+        Optional<Jewelry> jewelry = jewelryRepository.findById(id);
+        return jewelry.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+}

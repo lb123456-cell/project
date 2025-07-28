@@ -1,0 +1,44 @@
+package com.example.backend.service;
+
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.example.backend.dao.ReviewRepository;
+import com.example.backend.entity.Review;
+
+import jakarta.transaction.Transactional;
+
+@Service
+@Transactional
+public class ReviewService {
+
+    private final ReviewRepository reviewRepository;
+
+    public ReviewService(ReviewRepository reviewRepository) {
+        this.reviewRepository = reviewRepository;
+    }
+
+    public void postReview(String userEmail, Long jewelryId, double rating, String reviewDescription) throws Exception {
+
+        // ✅ Check if user already left a review for this jewelry
+        Optional<Review> existingReview = reviewRepository.findByUserEmailAndJewelryId(userEmail, jewelryId);
+        if (existingReview.isPresent()) {
+            throw new Exception("Review already left by this user for this jewelry");
+        }
+
+        // ✅ Create new review and populate fields
+        Review review = new Review();
+        review.setUserEmail(userEmail);
+        review.setJewelryId(jewelryId);
+        review.setRating(rating);
+        review.setReviewDescription(reviewDescription);
+        review.setDate(Date.valueOf(LocalDate.now())); // Set current date manually
+
+        reviewRepository.save(review);
+    }
+}
+
+

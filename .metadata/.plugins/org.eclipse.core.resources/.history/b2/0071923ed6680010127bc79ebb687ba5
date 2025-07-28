@@ -1,0 +1,29 @@
+package com.example.backend.entity;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Entity
+@Table(name = "jewelry")
+@Data
+public class Jewelry {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String brand;
+    private String description;
+
+    @JsonProperty("stock_quantity")
+    private int stockQuantity;
+
+    private int price;
+    private String category;
+    private String img;
+}
+
+
+

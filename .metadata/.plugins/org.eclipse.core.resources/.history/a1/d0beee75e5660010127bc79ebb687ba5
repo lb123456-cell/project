@@ -1,0 +1,47 @@
+package com.example.backend.service;
+
+import java.sql.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.backend.dao.JewelryRepository;
+import com.example.backend.dao.ReviewRepository;
+
+import jakarta.transaction.Transactional;
+
+@Service
+@Transactional
+public class ReviewService {
+	
+	private JewelryRepository jewelryRepository;
+	
+	private ReviewRepository reviewRepository;
+	
+	@Autowired
+	public ReviewService(JewelryRepository jewelryRepository,
+						ReviewRepository reviewRepository) {
+		this.jewelryRepository = jewelryRepository;
+		this.reviewRepository = reviewRepository;
+	}
+	
+	public void postReview(String userEmail, ReviewRequest reviewRequest) throw Exception{
+		Review validateReview = reviewRepository.findByUserEmailAndJewelryId(userEmail, reviewRequest.jewelryId());
+		if (validateReview !=null) {
+			throw new Exception("Review already created");
+		}
+		Review review = new Review();
+		review.setJewelryId(reviewRequest.getJewelryId());
+		review.setRating(reviewRequest.getRating());
+		review.setUserEmail(userEmail);
+		if (reviewRequest.getReviewDescription().isPresent()) {
+			review.setReviewDescription(reviewRequest.getReviewDescription().map(
+					Object::toString
+					).orElse(other:null));
+		}
+		
+		review.setDate(Date.valueOf(LocalDate.now()));
+		reviewRepository.save(review);
+		
+	}
+}

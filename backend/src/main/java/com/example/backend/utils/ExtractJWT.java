@@ -1,0 +1,41 @@
+package com.example.backend.utils;
+
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+
+public class ExtractJWT {
+
+    public static String payLoadJWTExtraction(String token, String extraction) {
+
+        token = token.replace("Bearer ", "");
+
+        try {
+            String[] chunks = token.split("\\.");
+            Base64.Decoder decoder = Base64.getUrlDecoder();
+            String payload = new String(decoder.decode(chunks[1]));
+
+            String[] entries = payload.split(",");
+            Map<String, String> map = new HashMap<>();
+
+            for (String entry : entries) {
+                String[] keyValue = entry.split(":");
+
+                if (keyValue.length == 2) {
+                    String key = keyValue[0].trim().replaceAll("\"", "").replace("{", "").trim();
+                    String value = keyValue[1].trim().replaceAll("\"", "").replace("}", "").trim();
+                    map.put(key, value);
+                }
+            }
+
+            if (map.containsKey(extraction)) {
+                return map.get(extraction);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+}

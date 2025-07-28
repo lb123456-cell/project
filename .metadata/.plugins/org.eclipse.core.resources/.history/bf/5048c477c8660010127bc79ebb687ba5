@@ -1,0 +1,71 @@
+package com.example.backend.service;
+
+import java.time.LocalDate;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.example.backend.dao.CheckoutRepository;
+import com.example.backend.dao.JewelryRepository;
+import com.example.backend.entity.Checkout;
+import com.example.backend.entity.Jewelry;
+
+import jakarta.transaction.Transactional;
+
+@Service
+@Transactional
+public class JewelryService {
+
+    private final JewelryRepository jewelryRepository;
+    private final CheckoutRepository checkoutRepository;
+
+    public JewelryService(JewelryRepository jewelryRepository, CheckoutRepository checkoutRepository) {
+        this.jewelryRepository = jewelryRepository;
+        this.checkoutRepository = checkoutRepository;
+    }
+
+    public Jewelry checkoutJewelry(String userEmail, Long jewelryId) {
+        Jewelry jewelry = jewelryRepository.findById(jewelryId)
+                .orElseThrow(() -> new IllegalStateException("Jewelry not found"));
+
+        Optional<Checkout> validateCheckout = checkoutRepository.findByUserEmailAndJewelryId(userEmail, jewelryId);
+        if (validateCheckout.isPresent() || jewelry.getStock_quantity() <= 0) {
+            throw new IllegalStateException("Jewelry already checked out by user or out of stock");
+        }
+
+        jewelry.setStock_quantity(jewelry.getStock_quantity() - 1);
+        jewelryRepository.save(jewelry);
+
+        Checkout checkout = new Checkout(
+                userEmail,
+                LocalDate.now().toString(),
+                LocalDate.now().plusDays(7).toString(),
+                jewelry  
+        );
+
+        checkoutRepository.save(checkout);
+        return jewelry;
+    }
+
+    public Boolean isJewelryCheckedOutByUser(String userEmail, Long jewelryId) {
+        Optional<Checkout> validateCheckout = checkoutRepository.findByUserEmailAndJewelryId(userEmail, jewelryId);
+        return validateCheckout.isPresent();
+    }
+
+    public int currentLoanCount(String userEmail) {
+        return checkoutRepository.findByUserEmail(userEmail).size();
+    }
+
+    public int getCheckoutCountForJewelry(Long jewelryId) {
+        return checkoutRepository.countByJewelryId(jewelryId);
+    }
+    public Optional<Jewelry> findById(Long id) {
+        return jewelryRepository.findById(id);
+    }
+
+}
+
+
+	
+
+	

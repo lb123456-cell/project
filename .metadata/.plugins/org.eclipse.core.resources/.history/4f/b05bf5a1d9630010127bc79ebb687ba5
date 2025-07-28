@@ -1,0 +1,10 @@
+package com.example.backend.dao;
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.backend.entity.Checkout;
+
+
+public interface CheckoutRepository extends JpaRepository<Checkout, Long> {
+
+	Checkout findByUserEmailAndJewelryId(String userEmail, Long jewelryId);
+	
+}

@@ -1,0 +1,17 @@
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
+
+public class ExtractJWT {
+
+    public static String payLoadJWTExtraction(String token, String extraction) {
+        try {
+            token = token.replace("Bearer ", "");
+
+            DecodedJWT decodedJWT = JWT.decode(token);
+            return decodedJWT.getClaim(extraction).asString(); // "sub" = email
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+}

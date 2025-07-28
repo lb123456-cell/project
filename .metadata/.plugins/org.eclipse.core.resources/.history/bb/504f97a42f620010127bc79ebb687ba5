@@ -1,0 +1,14 @@
+package com.example.backend.dao;
+import java.awt.print.Pageable;
+import org.hibernate.query.Page;
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.backend.entity.Jewelry;
+import org.sprngframework.web.bind.annotation.ReqeuestParam;
+
+public interface JewelryRepository extends JpaRepository <Jewelry, Long>{
+			
+	Page<Jewelry> findByTittleContaining(@ReqeuestParam("title")String title, Pageable pageable);
+	
+	
+}
+

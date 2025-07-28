@@ -1,0 +1,18 @@
+@Entity
+@Table(name = "jewelry")
+@Data
+public class Jewelry {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String brand;
+    private String description;
+    private int stockQuantity;
+    private int stockQuantityAvailable;
+    private int price;
+    private String category;
+    private String img;
+}

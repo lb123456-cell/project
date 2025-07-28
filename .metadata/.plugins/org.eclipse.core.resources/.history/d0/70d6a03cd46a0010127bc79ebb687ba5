@@ -1,0 +1,22 @@
+package com.example.backend.responsemodels;
+
+import com.example.backend.entity.Jewelry;
+import lombok.Data;
+
+@Data
+public class ShelfCurrentLoansResponse {
+
+    private Jewelry jewelry;
+    private int daysLeft;
+
+    // ✅ Default constructor (required by Jackson)
+    public ShelfCurrentLoansResponse() {
+    }
+
+    // Your existing constructor
+    public ShelfCurrentLoansResponse(Jewelry jewelry, int daysLeft) {
+        this.jewelry = jewelry;
+        this.daysLeft = daysLeft;
+    }
+}
+

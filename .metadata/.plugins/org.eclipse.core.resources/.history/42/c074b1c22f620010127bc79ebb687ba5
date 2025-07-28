@@ -1,0 +1,15 @@
+package com.example.backend.dao;
+import java.awt.print.Pageable;
+
+import org.hibernate.query.Page;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.backend.entity.Jewelry;
+
+public interface JewelryRepository extends JpaRepository <Jewelry, Long>{
+			
+	Page findByNameContaining(String name, Pageable pageable);
+
+	
+}
+

@@ -1,0 +1,20 @@
+package com.example.backend.dao;
+
+import com.example.backend.entity.Jewelry;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+
+public interface JewelryRepository extends JpaRepository<Jewelry, Long> 
+ {
+
+    @RestResource(path = "byName", rel = "byName")
+    List<Jewelry> findByNameContainingIgnoreCase(@Param("name") String name);
+
+    @RestResource(path = "byCategory", rel = "byCategory")
+    List<Jewelry> findByCategoryContainingIgnoreCase(@Param("category") String category);
+}
+

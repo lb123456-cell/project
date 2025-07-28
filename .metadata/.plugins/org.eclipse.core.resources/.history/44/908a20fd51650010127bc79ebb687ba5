@@ -1,0 +1,39 @@
+package com.example.backend.Controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.example.backend.entity.Jewelry;
+import com.example.backend.service.JewelryService;
+
+@CrossOrigin("http://localhost:3000")
+@RestController
+@RequestMapping("/api/jewelries")
+public class JewelryController {
+
+    private final JewelryService jewelryService;
+
+    @Autowired
+    public JewelryController(JewelryService jewelryService) {
+        this.jewelryService = jewelryService;
+    }
+
+    @GetMapping("/secure/currentLoans/count")
+    public int currentLoandCount() {
+        String userEmail = "test1user@email.com"; // hardcoded for now
+        return jewelryService.currentLoanCount(userEmail);
+    }
+
+    @GetMapping("/secure/ischeckedout/byuser")
+    public Boolean checkoutJewelryByUser(@RequestParam Long jewelryId) {
+        String userEmail = "test1user@email.com";
+        return jewelryService.checkoutJewelryByUse(userEmail, jewelryId);
+    }
+
+    @PutMapping("/secure/checkout")
+    public Jewelry checkoutJewelry(@RequestParam Long jewelryId) throws Exception {
+        String userEmail = "test1user@email.com";
+        return jewelryService.checkoutJewelry(userEmail, jewelryId);
+    }
+}
+

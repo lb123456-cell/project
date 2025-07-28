@@ -1,0 +1,58 @@
+package com.example.backend.config;
+
+import com.example.backend.entity.Jewelry;
+import com.example.backend.entity.Message;
+import com.example.backend.entity.Review;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
+import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+
+@Configuration
+public class MyDataRestConfig implements RepositoryRestConfigurer {
+
+    private String theAllowedOrigins = "http://localhost:3000";
+
+    @Override
+    public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
+        
+    	HttpMethod[] unsupportedActions = { 
+    			HttpMethod.PUT, 
+    			HttpMethod.POST, 
+    			HttpMethod.DELETE, 
+    			HttpMethod.PATCH };
+        
+    	config.exposeIdsFor(Jewelry.class);
+    	config.exposeIdsFor(Review.class);
+    	config.exposeIdsFor(Message.class);
+       
+        config.getExposureConfiguration()
+                .forDomainType(Jewelry.class)
+                .withItemExposure((metadata, httpMethods) -> 
+                httpMethods.disable(unsupportedActions))
+                .withCollectionExposure((metadata, httpMethods) -> 
+                httpMethods.disable(unsupportedActions));
+        
+        config.getExposureConfiguration()
+        			.forDomainType(Review.class)
+        			.withItemExposure((metadata, httpMethods) -> 
+        			httpMethods.disable(unsupportedActions))
+        			.withCollectionExposure((metadata, httpMethods) -> 
+        			httpMethods.disable(unsupportedActions));
+        
+        config.getExposureConfiguration()
+					.forDomainType(Message.class)
+					.withItemExposure((metadata, httpMethods) -> 
+					httpMethods.disable(unsupportedActions))
+					.withCollectionExposure((metadata, httpMethods) -> 
+					httpMethods.disable(unsupportedActions));
+        
+        cors.addMapping(config.getBasePath() + "/**")
+        .allowedOrigins(theAllowedOrigins)
+        .allowedMethods("*");
+
+    }
+}
+

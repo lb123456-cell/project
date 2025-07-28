@@ -1,0 +1,22 @@
+package com.example.backend.dao;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.repository.query.Param;
+import org.springframework.data.rest.core.annotation.RestResource;
+
+import com.example.backend.entity.Jewelry;
+
+import java.util.List;
+
+@RepositoryRestResource(path = "jewelries")
+public interface JewelryRepository extends JpaRepository<Jewelry, Long> {
+
+    // 🔍 Add this search method:
+    @RestResource(path = "byName", rel = "byName")
+    List<Jewelry> findByNameContainingIgnoreCase(@Param("name") String name);
+
+    // Optional: You can add another search method for category
+    @RestResource(path = "byCategory", rel = "byCategory")
+    List<Jewelry> findByCategoryContainingIgnoreCase(@Param("category") String category);
+}

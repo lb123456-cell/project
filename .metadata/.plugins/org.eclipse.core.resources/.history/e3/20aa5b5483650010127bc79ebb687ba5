@@ -1,0 +1,58 @@
+package com.example.backend.Controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.example.backend.entity.Jewelry;
+import com.example.backend.service.JewelryService;
+
+@CrossOrigin("http://localhost:3000")
+@RestController
+@RequestMapping("/api/jewelries")
+public class JewelryController {
+
+    private final JewelryService jewelryService;
+
+    @Autowired
+    public JewelryController(JewelryService jewelryService) {
+        this.jewelryService = jewelryService;
+    }
+
+    // ✅ TEST ENDPOINT TO CONFIRM BACKEND IS ALIVE
+    @GetMapping("/secure/test")
+    public String testEndpoint() {
+        System.out.println("✅ /secure/test was called");
+        return "🎉 Hello from the backend!";
+    }
+
+    // ✅ COUNT CURRENT CHECKED OUT ITEMS
+    @GetMapping("/secure/currentLoans/count")
+    public int currentLoanCount() {
+        String userEmail = "test1user@email.com"; // Temporary hardcoded
+        System.out.println("✅ /secure/currentLoans/count hit for " + userEmail);
+        return jewelryService.currentLoanCount(userEmail);
+    }
+
+    // ✅ CHECK IF USER ALREADY CHECKED OUT THIS ITEM
+    @GetMapping("/secure/ischeckedout/byuser")
+    public Boolean checkoutJewelryByUser(@RequestParam Long jewelryId) {
+        String userEmail = "test1user@email.com"; // Temporary hardcoded
+        System.out.println("✅ /secure/ischeckedout/byuser hit for ID: " + jewelryId);
+        return jewelryService.checkoutJewelryByUse(userEmail, jewelryId);
+    }
+
+    // ✅ PERFORM A CHECKOUT ACTION
+    @PutMapping("/secure/checkout")
+    public Jewelry checkoutJewelry(@RequestParam Long jewelryId) throws Exception {
+        String userEmail = "test1user@email.com"; // Temporary hardcoded
+        System.out.println("✅ /secure/checkout hit for ID: " + jewelryId);
+        return jewelryService.checkoutJewelry(userEmail, jewelryId);
+    }
+    @GetMapping("/checkout/count")
+    public int getCheckoutCount(@RequestParam Long jewelryId) {
+        System.out.println("✅ /checkout/count hit for ID: " + jewelryId);
+        return jewelryService.getCheckoutCountForJewelry(jewelryId);
+    }
+
+}
+

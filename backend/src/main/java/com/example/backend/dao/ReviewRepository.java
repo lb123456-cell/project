@@ -1,0 +1,23 @@
+package com.example.backend.dao;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import com.example.backend.entity.Review;
+
+public interface ReviewRepository extends JpaRepository<Review, Long> {
+    
+    Optional<Review> findByUserEmailAndJewelryId(String userEmail, Long jewelryId);
+
+    List<Review> findByJewelryId(Long jewelryId);
+
+    @Modifying
+    @Query("DELETE FROM Review r WHERE r.jewelryId = :jewelryId")
+    void deleteAllByJewelryId(@Param("jewelryId") Long jewelryId);
+}
+

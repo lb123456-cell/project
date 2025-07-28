@@ -1,0 +1,20 @@
+package com.example.backend.responsemodels;
+
+import com.example.backend.entity.Jewelry;
+import lombok.Data;
+
+@Data
+public class ShelfCurrentLoansResponse {
+
+    private Jewelry jewelry;
+    private int daysLeft;
+
+    public ShelfCurrentLoansResponse() {
+    }
+
+    public ShelfCurrentLoansResponse(Jewelry jewelry, int daysLeft) {
+        this.jewelry = jewelry;
+        this.daysLeft = daysLeft;
+    }
+}
+

@@ -1,0 +1,73 @@
+package com.example.backend.Controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.backend.requestmodels.AddJewelryRequest;
+import com.example.backend.service.AdminService;
+import com.example.backend.utils.ExtractJWT;
+
+@CrossOrigin("http://localhost:3000")
+@RestController
+@RequestMapping("/api/admin")
+public class AdminController {
+
+    private final AdminService adminService;
+
+    @Autowired
+    public AdminController(AdminService adminService) {
+        this.adminService = adminService;
+    }
+
+    @PutMapping("/secure/increase/jewelry/quantity/{jewelryId}")
+    public void increaseJewelryQuantity(@RequestHeader(value = "Authorization") String token,
+                                        @PathVariable Long jewelryId) throws Exception {
+        String admin = ExtractJWT.payLoadJWTExtraction(token, "userType");
+        if (admin == null || !admin.equals("admin")) {
+            throw new Exception("Administration page only");
+        }
+        adminService.increaseJewelryQuantity(jewelryId);
+    }
+
+
+    @PutMapping("/secure/decrease/jewelry/quantity/{jewelryId}")
+    public void decreaseJewelryQuantity(@RequestHeader(value = "Authorization") String token,
+                                        @PathVariable Long jewelryId) throws Exception {
+        String admin = ExtractJWT.payLoadJWTExtraction(token, "userType");
+        if (admin == null || !admin.equals("admin")) {
+            throw new Exception("Administration page only");
+        }
+        adminService.decreaseJewelryQuantity(jewelryId);
+    }
+
+
+    @PostMapping("/secure/add/jewelry")
+    public void postJewelry(@RequestHeader(value = "Authorization") String token,
+                            @RequestBody AddJewelryRequest addJewelryRequest) throws Exception {
+        String admin = ExtractJWT.payLoadJWTExtraction(token, "userType");
+        if (admin == null || !admin.equals("admin")) {
+            throw new Exception("Administration page only");
+        }
+        adminService.postJewelry(addJewelryRequest);
+    }
+    
+    @DeleteMapping("/secure/delete/jewelry")
+    public void deleteJewelry(@RequestHeader(value="Authorization")String token, 
+    						  @RequestParam Long jewelryId) throws Exception {
+    	String admin = ExtractJWT.payLoadJWTExtraction(token, "userType");
+    	if(admin == null || !admin.equals("admin")) {
+    		throw new Exception("Administration page only");
+    	}
+    	adminService.deleteJewelry(jewelryId);
+    }
+}
+

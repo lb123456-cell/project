@@ -1,0 +1,53 @@
+package com.example.backend.service;
+
+import java.sql.Date;
+import java.time.LocalDate;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.backend.dao.JewelryRepository;
+import com.example.backend.dao.ReviewRepository;
+import com.example.backend.entity.Review;
+import com.example.backend.requestmodels.ReviewRequest;
+
+import jakarta.transaction.Transactional;
+
+@Service
+@Transactional
+public class ReviewService {
+
+    private final ReviewRepository reviewRepository;
+
+    @Autowired
+    public ReviewService(ReviewRepository reviewRepository) {
+        this.reviewRepository = reviewRepository;
+    }
+
+    public void postReview(String userEmail, ReviewRequest reviewRequest) throws Exception {
+        Review validateReview = reviewRepository.findByUserEmailAndJewelryId(userEmail, reviewRequest.getJewelryId());
+        if (validateReview != null) {
+            throw new Exception("Review already created");
+        }
+
+        Review review = new Review();
+        review.setJewelryId(reviewRequest.getJewelryId());
+        review.setRating(reviewRequest.getRating());
+        review.setUserEmail(userEmail);
+        review.setReviewDescription(reviewRequest.getReviewDescription()); 
+        review.setDate(Date.valueOf(LocalDate.now()));
+
+        reviewRepository.save(review);
+    }
+
+    
+    public boolean userReviewListed(String userEmail,Long jewelryId) {
+    	Review validateReview = reviewRepository.findByUserEmailAndJewelryId(userEmail, jewelryId);
+    	if (validateReview != null) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+}
+

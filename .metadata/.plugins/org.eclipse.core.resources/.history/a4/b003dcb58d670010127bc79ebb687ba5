@@ -1,0 +1,34 @@
+package com.example.backend.requestmodels;
+
+import java.util.Optional;
+
+public class ReviewRequest {
+    private Long jewelryId;
+    private int rating;
+    private Optional<String> reviewDescription;
+
+    public Long getJewelryId() {
+        return jewelryId;
+    }
+
+    public void setJewelryId(Long jewelryId) {
+        this.jewelryId = jewelryId;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public Optional<String> getReviewDescription() {
+        return reviewDescription;
+    }
+
+    public void setReviewDescription(Optional<String> reviewDescription) {
+        this.reviewDescription = reviewDescription;
+    }
+}
+

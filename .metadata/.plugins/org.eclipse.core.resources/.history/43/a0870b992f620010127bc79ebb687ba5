@@ -1,0 +1,5 @@
+package org.sprngframework.web.bind.annotation;
+
+public class ReqeuestParam {
+
+}

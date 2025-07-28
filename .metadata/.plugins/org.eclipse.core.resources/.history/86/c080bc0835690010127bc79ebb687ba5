@@ -1,0 +1,27 @@
+package com.example.backend.dao;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import com.example.backend.entity.Checkout;
+
+public interface CheckoutRepository extends JpaRepository<Checkout, Long> {
+
+    Optional<Checkout> findByUserEmailAndJewelryId(String userEmail, Long jewelryId);
+
+    List<Checkout> findByUserEmail(String userEmail); 
+
+
+    @Query("SELECT COUNT(c) FROM Checkout c WHERE c.jewelry.id = :jewelryId")
+    int countByJewelryId(@Param("jewelryId") Long jewelryId);
+
+    @Modifying
+    @Query("DELETE FROM Checkout c WHERE c.jewelryId = :jewelryId")
+    void deleteAllByJewelryId(@Param("jewelryId") Long jewelryId);
+
+}

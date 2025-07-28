@@ -1,0 +1,74 @@
+package com.example.backend.entity;
+
+import java.time.LocalDate;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
+@Entity
+public class Checkout {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String userEmail;
+    private LocalDate checkoutDate;
+    private LocalDate returnDate;
+
+    @ManyToOne
+    @JoinColumn(name = "jewelry_id")
+    private Jewelry jewelry;
+
+    public Checkout() {
+    }
+
+    public Checkout(String userEmail, LocalDate checkoutDate, LocalDate returnDate, Jewelry jewelry) {
+        this.userEmail = userEmail;
+        this.checkoutDate = checkoutDate;
+        this.returnDate = returnDate;
+        this.jewelry = jewelry;
+    }
+
+    public LocalDate getReturnDate() {
+        return returnDate;
+    }
+
+    public Jewelry getJewelry() {
+        return jewelry;
+    }
+
+    public LocalDate getCheckoutDate() {
+        return checkoutDate;
+    }
+
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
+    }
+    
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public void setCheckoutDate(LocalDate checkoutDate) {
+        this.checkoutDate = checkoutDate;
+    }
+
+    public void setJewelry(Jewelry jewelry) {
+        this.jewelry = jewelry;
+    }
+
+    public Long getId() {
+        return id;
+    }
+}
+

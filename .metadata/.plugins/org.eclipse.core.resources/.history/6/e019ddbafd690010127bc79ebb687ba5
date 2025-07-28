@@ -1,0 +1,44 @@
+package com.example.backend.entity;
+
+import jakarta.persistence.*;
+import java.sql.Date;
+
+@Entity
+@Table(name = "review")
+public class Review {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "user_email")
+    private String userEmail;
+
+    @Column(name = "jewelry_id")
+    private Long jewelryId;
+
+    @Column(name = "rating")
+    private double rating;
+
+    @Column(name = "review_description")
+    private String reviewDescription;
+
+    @Column(name = "date")
+    private Date date;
+
+    public Review() {}
+
+    public Long getId() { return id; }
+    public String getUserEmail() { return userEmail; }
+    public Long getJewelryId() { return jewelryId; }
+    public double getRating() { return rating; }
+    public String getReviewDescription() { return reviewDescription; }
+    public Date getDate() { return date; }
+
+    public void setUserEmail(String userEmail) { this.userEmail = userEmail; }
+    public void setJewelryId(Long jewelryId) { this.jewelryId = jewelryId; }
+    public void setRating(double rating) { this.rating = rating; }
+    public void setReviewDescription(String reviewDescription) { this.reviewDescription = reviewDescription; }
+    public void setDate(Date date) { this.date = date; }
+}
+

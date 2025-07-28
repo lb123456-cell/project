@@ -1,0 +1,23 @@
+package com.example.backend.controller;
+package com.example.backend.controller;
+
+import com.example.backend.dao.JewelryRepository;
+import com.example.backend.entity.Jewelry;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/jewelries")
+@CrossOrigin(origins = "http://localhost:3000")
+public class JewelryController {
+
+    @Autowired
+    private JewelryRepository jewelryRepository;
+
+    @GetMapping
+    public List<Jewelry> getAllJewelries() {
+        return jewelryRepository.findAll();
+    }
+}

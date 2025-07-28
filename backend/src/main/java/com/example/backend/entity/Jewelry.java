@@ -1,0 +1,25 @@
+package com.example.backend.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class Jewelry {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    private String brand;
+    private String description;
+    private String img;
+    private double price;
+    private String category;
+    private int stockQuantity;
+
+    
+}
+

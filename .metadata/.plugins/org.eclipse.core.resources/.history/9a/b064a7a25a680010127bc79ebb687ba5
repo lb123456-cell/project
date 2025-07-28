@@ -1,0 +1,73 @@
+package com.example.backend.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "checkout")
+public class Checkout {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String userEmail;
+
+    private String checkoutDate;
+    private String returnDate;
+
+    @ManyToOne
+    @JoinColumn(name = "jewelry_id", nullable = false)
+    private Jewelry jewelry;
+
+    public Checkout() {}
+
+    public Checkout(String userEmail, String checkoutDate, String returnDate, Jewelry jewelry) {
+        this.userEmail = userEmail;
+        this.checkoutDate = checkoutDate;
+        this.returnDate = returnDate;
+        this.jewelry = jewelry;
+    }
+
+    // Getters and setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getCheckoutDate() {
+        return checkoutDate;
+    }
+
+    public void setCheckoutDate(String checkoutDate) {
+        this.checkoutDate = checkoutDate;
+    }
+
+    public String getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(String returnDate) {
+        this.returnDate = returnDate;
+    }
+
+    public Jewelry getJewelry() {
+        return jewelry;
+    }
+
+    public void setJewelry(Jewelry jewelry) {
+        this.jewelry = jewelry;
+    }
+}
+
+

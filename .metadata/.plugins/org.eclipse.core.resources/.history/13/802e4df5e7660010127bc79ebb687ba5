@@ -1,0 +1,16 @@
+package com.example.backend.dao;
+
+import com.example.backend.entity.Review;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+@RepositoryRestResource
+public interface ReviewRepository extends JpaRepository<Review, Long> {
+
+    Page<Review> findByJewelryId(@Param("jewelryId") Long jewelryId, Pageable pageable);
+
+    Review findByUserEmailAndJewelryId(String userEmail, Object object);
+}

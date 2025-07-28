@@ -1,0 +1,25 @@
+package com.example.backend.dao;
+
+import com.example.backend.entity.Jewelry;
+import com.example.backend.projection.JewelryProjection;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+
+@RepositoryRestResource(path = "jewelries", excerptProjection = JewelryProjection.class)
+public interface JewelryRepository extends JpaRepository<Jewelry, Long> {
+    @RestResource(path = "byName", rel = "byName")
+    List<Jewelry> findByNameContainingIgnoreCase(@Param("name") String name);
+
+    @RestResource(path = "byCategory", rel = "byCategory")
+    @Query("SELECT j FROM Jewelry j WHERE LOWER(TRIM(j.category)) = LOWER(TRIM(:category))")
+    List<Jewelry> findByCategoryExactIgnoreCase(@Param("category") String category);
+    
+    @Query("SELECT j FROM Jewelry j WHERE j.id IN :jewelryIds")
+    List<Jewelry> findJewelriesByJewelryIds(@Param("jewelryIds") List<Long> jewelryIds);
+}
